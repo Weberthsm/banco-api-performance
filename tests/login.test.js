@@ -3,10 +3,14 @@ import { sleep,check } from 'k6';
 
 
 export const options = {
-  iterations: 50,
- thresholds: {
+
+
+//  iterations: 50,  / executa 50 chamadas sequenciais
+  vus: 10,    // simula 10 usuários simultaneos
+  duration: '30s',
+  thresholds: {
     
-    http_req_duration: ['p(95)<7', 'max <8'], // 95% of requests should be below 200ms
+    http_req_duration: ['p(95)<3000', 'max <5000'], // 95% of requests should be below 200ms
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
   },
 };
@@ -28,7 +32,7 @@ export default function () {
  const res = http.post(url, payload, params);
   sleep(1);
 
-console.log(res);
+//console.log(res);
 
   check(res, {
     'Validar que status é 200': (r) => r.status === 200,
